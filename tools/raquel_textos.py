@@ -154,8 +154,8 @@ SUB = [
     ('crafts under one roof', 'oficinas no mesmo ateliê'),
     ('people per class, at most', 'casais por dia, em média'),
     ('wheels, two kilns, three presses', 'de oficina, do barro à peça'),
-    ('Bring your people.', 'Traga a sua turma.'),
-    ('Plan a group', 'Fechar uma turma'),
+    ('Bring your people.', 'Grupos.'),
+    ('Plan a group', 'Fechar turma'),
     ('See you at the bench', 'Te espero no ateliê'),
     ('Your first piece starts here.', 'Sua primeira peça começa aqui.'),
     ('Find a class', 'Reservar oficina'),
@@ -180,8 +180,8 @@ SUB = [
 
     # Depoimentos (exemplos, para trocar pelos reais)
     ('From our students', 'Depoimentos'),
-    ('In their own words.', 'Nas palavras de quem veio.'),
-    ('4.9 average from 320 student reviews', 'Exemplos: aqui entram os depoimentos reais dos destaques de Feedback'),
+    ('In their own words.', 'Quem já veio.'),
+    ('4.9 average from 320 student reviews', 'Depoimentos de exemplo'),
     ('I came in thinking I wasn’t creative. Six weeks later I had made a full set of bowls for my own kitchen.',
      'Espaço para o depoimento de um casal que fez a oficina (texto de exemplo).'),
     ('The best Saturday I have had in years. Phones away, hands inky, tea on the bench.',
