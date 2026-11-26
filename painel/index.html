@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Painel da Raquel — Raquel Rocha Cerâmica</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#242720">
+<link rel="stylesheet" href="/ceramica/demo/demo.css">
+<style>
+  body { background: var(--bg); }
+  .p-top { position: sticky; top: 0; z-index: 20; background: var(--ink); color: #f5f2ea; }
+  .p-top .in { max-width: 1120px; margin: 0 auto; padding: 14px 20px 0; }
+  .p-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .p-row .brand b { color: #f5f2ea; }
+  .p-hello { font-size: 13px; color: #b5b5ab; }
+  .tabs { display: flex; gap: 4px; margin-top: 12px; overflow-x: auto; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tabs button { all: unset; cursor: pointer; padding: 12px 14px; font-size: 14px; color: #b5b5ab; border-bottom: 2px solid transparent; white-space: nowrap; }
+  .tabs button.on { color: #f5f2ea; border-color: var(--clay-2); }
+  .tabs button:focus-visible { outline: 2px solid var(--clay-2); outline-offset: -2px; }
+  .pane { display: none; padding: 24px 0 80px; }
+  .pane.on { display: block; animation: rise .35s ease both; }
+  .pane h2 { font-family: var(--display); font-weight: 400; letter-spacing: -0.04em; font-size: clamp(32px, 6vw, 48px); margin: 0 0 6px; }
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 18px 0 22px; }
+  .kpi { background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 14px 16px; }
+  .kpi b { display: block; font-family: var(--display); font-weight: 400; font-size: 34px; letter-spacing: -0.04em; line-height: 1.05; }
+  .kpi span { font-size: 13px; color: var(--muted); }
+  .list { display: grid; gap: 10px; }
+  .res { display: grid; grid-template-columns: 74px 1fr auto; gap: 14px; align-items: center; background: #fbfaf6; border: 1px solid var(--line); border-radius: 18px; padding: 14px 16px; }
+  .res.nova { border-color: var(--clay); box-shadow: 0 0 0 3px rgba(166, 90, 61, .14); }
+  .res .h { font-family: var(--display); font-size: 26px; letter-spacing: -0.04em; line-height: 1; }
+  .res .h small { display: block; font-family: var(--sans); font-size: 12px; color: var(--muted); letter-spacing: 0; margin-top: 4px; }
+  .res .who b { font-size: 16px; }
+  .res .who div { font-size: 13px; color: var(--muted); margin-top: 3px; }
+  .res .who .obs { color: var(--clay); }
+  .res .act { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 5px 10px; border-radius: 999px; }
+  .pill.pago { background: #e2ead8; color: #3e5a2a; }
+  .pill.pendente { background: #f6e3cf; color: #8a4b1c; }
+  .pill.cancelada { background: #ece8e1; color: #8a857b; text-decoration: line-through; }
+  .ic { all: unset; cursor: pointer; width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; border: 1px solid var(--line); background: #fff; font-size: 15px; }
+  .ic:hover { background: var(--paper); }
+  .ic.wa { background: #25d366; border-color: #25d366; color: #fff; }
+  .empty { text-align: center; padding: 40px 20px; color: var(--muted); border: 1px dashed var(--line); border-radius: 18px; }
+  .day-nav { display: flex; align-items: center; gap: 10px; margin-top: 14px; }
+  .day-nav strong { font-weight: 600; min-width: 190px; text-align: center; }
+  /* Agenda semanal */
+  .week { display: grid; grid-template-columns: repeat(7, minmax(120px, 1fr)); gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-top: 16px; }
+  .col { background: #fbfaf6; border: 1px solid var(--line); border-radius: 16px; padding: 10px; min-height: 260px; }
+  .col.closed { background: repeating-linear-gradient(135deg, #efebe3 0 8px, #f5f2ea 8px 16px); }
+  .col.today { border-color: var(--ink); }
+  .col h4 { margin: 0 0 2px; font-size: 13px; font-weight: 600; display: flex; justify-content: space-between; }
+  .col .occ { height: 5px; border-radius: 5px; background: var(--sand); overflow: hidden; margin: 6px 0 10px; }
+  .col .occ i { display: block; height: 100%; background: var(--clay); }
+  .ev { font-size: 12px; border-radius: 10px; padding: 7px 8px; margin-bottom: 6px; background: var(--paper); border-left: 3px solid var(--olive); line-height: 1.35; cursor: default; }
+  .ev.casal { border-color: var(--clay); } .ev.familia { border-color: var(--olive); } .ev.infantil { border-color: #d3a54a; } .ev.noturna { border-color: #4b5d74; }
+  .ev.blk { background: #ece8e1; border-color: #8a857b; color: #6f6a61; }
+  .ev b { display: block; font-size: 12px; }
+  .col .tools { display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap; }
+  .mini { all: unset; cursor: pointer; font-size: 11px; padding: 4px 8px; border-radius: 999px; border: 1px solid var(--line); background: #fff; }
+  .mini:hover { background: var(--paper); }
+  /* Oficinas */
+  .of-row { display: grid; grid-template-columns: 64px 1fr auto; gap: 14px; align-items: center; background: #fbfaf6; border: 1px solid var(--line); border-radius: 18px; padding: 12px 14px; }
+  .of-row img { width: 64px; height: 64px; object-fit: cover; border-radius: 12px; }
+  .of-row .f { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+  .of-row label { font-size: 12px; color: var(--muted); display: grid; gap: 4px; }
+  .of-row input[type=number] { width: 96px; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); font: inherit; background: #fff; }
+  .switch { position: relative; width: 48px; height: 28px; }
+  .switch input { opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; position: absolute; z-index: 1; }
+  .switch span { position: absolute; inset: 0; border-radius: 28px; background: var(--line); transition: background .2s; }
+  .switch span::after { content: ""; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; transition: transform .2s; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+  .switch input:checked + span { background: var(--olive); }
+  .switch input:checked + span::after { transform: translateX(20px); }
+  .switch input:focus-visible + span { outline: 2px solid var(--clay); outline-offset: 2px; }
+  /* Vales */
+  table.vt { width: 100%; border-collapse: collapse; font-size: 14px; background: #fbfaf6; border: 1px solid var(--line); border-radius: 18px; overflow: hidden; }
+  .vt th, .vt td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+  .vt th { font-size: 12px; color: var(--muted); font-weight: 600; background: var(--paper); }
+  .vt tr:last-child td { border-bottom: 0; }
+  .vt code { font-family: var(--display); font-size: 15px; letter-spacing: .02em; }
+  .pill.ativo { background: #e2ead8; color: #3e5a2a; } .pill.usado { background: #ece8e1; color: #6f6a61; } .pill.vencido { background: #f3dcd6; color: #8a2f22; }
+  .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+  .note-box { margin-top: 26px; padding: 16px 18px; border-radius: 16px; background: var(--paper); font-size: 14px; color: var(--muted); }
+  .modal .box .field { margin-bottom: 12px; }
+  .modal select { width: 100%; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--line); font: inherit; background: #fff; }
+  @media (max-width: 760px) {
+    .kpis { grid-template-columns: repeat(2, 1fr); }
+    .res { grid-template-columns: 58px 1fr; }
+    .res .act { grid-column: 1 / -1; justify-content: flex-start; }
+    .vt .hide-m { display: none; }
+    .of-row { grid-template-columns: 52px 1fr; }
+    .of-row img { width: 52px; height: 52px; }
+    .of-row .switch { grid-column: 2; }
+  }
+</style>
+</head>
+<body>
+
+<div class="demo-bar">Demonstração · este é o painel que só a Raquel vê <a href="/ceramica/reservar/" target="_blank" rel="noopener">Abrir a página de reservas ↗</a></div>
+
+<header class="p-top">
+  <div class="in">
+    <div class="p-row">
+      <a class="brand" href="/ceramica/" aria-label="Site">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="#f5f2ea" stroke-width="2.4" stroke-linecap="round"><path d="M20 4a16 16 0 1 0 16 16"/><path d="M20 10a10 10 0 1 0 10 10"/><circle cx="20" cy="20" r="4"/></g></svg>
+        <b>Painel</b>
+      </a>
+      <span class="p-hello" id="hello">Olá, Raquel</span>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button role="tab" class="on" data-tab="hoje" aria-selected="true">Hoje</button>
+      <button role="tab" data-tab="agenda" aria-selected="false">Agenda</button>
+      <button role="tab" data-tab="oficinas" aria-selected="false">Oficinas</button>
+      <button role="tab" data-tab="vales" aria-selected="false">Vales-presente</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- HOJE -->
+  <section class="pane on" id="tab-hoje" role="tabpanel">
+    <div class="day-nav">
+      <button class="round" id="dPrev" aria-label="Dia anterior">←</button>
+      <strong id="dLabel">Hoje</strong>
+      <button class="round" id="dNext" aria-label="Próximo dia">→</button>
+    </div>
+    <div class="kpis" id="kpis"></div>
+    <div class="toolbar">
+      <h2 style="font-size:30px;margin:0">Reservas do dia</h2>
+      <button class="btn" id="novaManual">Reserva manual <span class="ring">+</span></button>
+    </div>
+    <div class="list" id="lista" style="margin-top:14px"></div>
+  </section>
+
+  <!-- AGENDA -->
+  <section class="pane" id="tab-agenda" role="tabpanel">
+    <h2>Agenda da semana</h2>
+    <p class="muted" style="margin:0">Toque em “Bloquear dia” para folga ou evento. “Bloquear horário” tira 1h30 da agenda do site.</p>
+    <div class="day-nav">
+      <button class="round" id="wPrev" aria-label="Semana anterior">←</button>
+      <strong id="wLabel"></strong>
+      <button class="round" id="wNext" aria-label="Próxima semana">→</button>
+    </div>
+    <div class="week" id="week"></div>
+  </section>
+
+  <!-- OFICINAS -->
+  <section class="pane" id="tab-oficinas" role="tabpanel">
+    <h2>Oficinas</h2>
+    <p class="muted" style="margin:0 0 16px">Mude o preço, as vagas por horário ou pause uma oficina. A página de reservas atualiza na hora.</p>
+    <div class="list" id="ofList"></div>
+    <div class="note-box">Horário de funcionamento: <b>10h às 17h</b> (último início às 17h), oficinas de <b>1h30</b>, fechado às segundas. Sinal de <b>50%</b> no Pix, remarcação até <b>48h</b> antes.</div>
+  </section>
+
+  <!-- VALES -->
+  <section class="pane" id="tab-vales" role="tabpanel">
+    <h2>Vales-presente</h2>
+    <p class="muted" style="margin:0 0 16px">Todo vale vendido no site aparece aqui, com quem deu e quem ganhou.</p>
+    <table class="vt">
+      <thead><tr><th>Código</th><th>Presente</th><th class="hide-m">De → Para</th><th>Validade</th><th>Status</th></tr></thead>
+      <tbody id="vTbody"></tbody>
+    </table>
+    <div class="toolbar" style="margin-top:26px">
+      <span class="small muted">Os dados desta demonstração ficam só neste navegador.</span>
+      <button class="chip-link" id="reset">Recomeçar a demonstração</button>
+    </div>
+  </section>
+</main>
+
+<div class="modal" id="mManual" role="dialog" aria-modal="true" aria-labelledby="mmT">
+  <div class="box">
+    <h3 id="mmT">Reserva manual</h3>
+    <p class="small muted" style="margin-top:-6px">Para quem reservou por telefone ou chegou no balcão.</p>
+    <div class="field"><label for="mNome">Nome</label><input class="input" id="mNome" placeholder="Nome do cliente"></div>
+    <div class="field"><label for="mWhats">WhatsApp</label><input class="input" id="mWhats" inputmode="tel" placeholder="(12) 99999-9999"></div>
+    <div class="field"><label for="mOf">Oficina</label><select id="mOf"></select></div>
+    <div class="field" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div><label for="mData">Dia</label><input class="input" id="mData" type="date"></div>
+      <div><label for="mHora">Início</label><select id="mHora"></select></div>
+    </div>
+    <div class="field"><label for="mQtd">Pessoas</label><input class="input" id="mQtd" type="number" min="1" max="8" value="2"></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;align-items:center">
+      <button class="link-btn" id="mCancel">Cancelar</button>
+      <button class="btn" id="mSave">Salvar <span class="ring">✓</span></button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="/ceramica/demo/demo.js"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var C = RR.CONFIG, dia = RR.today(), semana = inicioSemana(RR.today()), novas = {};
+
+  var h = new Date().getHours();
+  $('hello').textContent = (h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite') + ', Raquel';
+
+  // Abas
+  document.querySelectorAll('.tabs button').forEach(function (b) {
+    b.onclick = function () { abrir(b.dataset.tab); };
+  });
+  function abrir(t) {
+    document.querySelectorAll('.tabs button').forEach(function (x) { var on = x.dataset.tab === t; x.classList.toggle('on', on); x.setAttribute('aria-selected', on); });
+    document.querySelectorAll('.pane').forEach(function (p) { p.classList.toggle('on', p.id === 'tab-' + t); });
+    render();
+  }
+
+  function waLink(r, tipo) {
+    var of = RR.oficina(r.oficina), num = (r.whats || '').replace(/\D/g, '');
+    var first = (r.nome || '').split(/[ (]/)[0];
+    var msg = tipo === 'lembrete'
+      ? 'Oi, ' + first + '! Passando para lembrar da sua ' + of.nome + ' ' + (r.data === RR.iso(RR.addDays(RR.today(), 1)) ? 'amanhã' : 'no dia ' + RR.dataCurta(r.data)) + ', às ' + RR.horaBR(r.hora) + ', aqui no ateliê em Cunha. Qualquer coisa me chama. Raquel'
+      : 'Oi, ' + first + '! Aqui é a Raquel, do ateliê. Recebi sua reserva da ' + of.nome + ' para ' + RR.dataCurta(r.data) + ', às ' + RR.horaBR(r.hora) + '.';
+    return 'https://wa.me/55' + num + '?text=' + encodeURIComponent(msg);
+  }
+
+  // ---------- HOJE ----------
+  function renderHoje() {
+    var s = RR.iso(dia), t = RR.iso(RR.today());
+    $('dLabel').textContent = s === t ? 'Hoje · ' + RR.dataCurta(s) : RR.dataLonga(s);
+    var rs = RR.reservas().filter(function (r) { return r.data === s; }).sort(function (a, b) { return a.hora < b.hora ? -1 : 1; });
+    var ativas = rs.filter(function (r) { return r.status !== 'cancelada'; });
+    var pessoas = ativas.reduce(function (n, r) { var o = RR.oficina(r.oficina); return n + (o.porPessoa ? r.qtd : 2); }, 0);
+    var sinal = ativas.filter(function (r) { return r.status === 'pago'; }).reduce(function (n, r) { var o = RR.oficina(r.oficina); return n + (r.meio === 'vale' ? 0 : RR.total(o, r.qtd) * C.sinal); }, 0);
+    var pend = ativas.filter(function (r) { return r.status === 'pendente'; }).length;
+    var fechado = RR.fechado(dia);
+    $('kpis').innerHTML = [
+      [ativas.length, 'turma' + (ativas.length === 1 ? '' : 's')],
+      [pessoas, 'pessoas no ateliê'],
+      [RR.money(sinal), 'de sinal recebido'],
+      [pend, 'sinal pendente']
+    ].map(function (k) { return '<div class="kpi"><b>' + k[0] + '</b><span>' + k[1] + '</span></div>'; }).join('');
+    if (!rs.length) {
+      $('lista').innerHTML = '<div class="empty">' + (fechado ? 'Ateliê fechado neste dia.' : 'Nenhuma reserva para este dia ainda.') + '</div>';
+      return;
+    }
+    $('lista').innerHTML = rs.map(function (r) {
+      var o = RR.oficina(r.oficina), fim = RR.toHora(RR.toMin(r.hora) + o.dur);
+      var qtd = o.porPessoa ? r.qtd + ' ' + o.unidade + (r.qtd > 1 ? 's' : '') : 'casal';
+      var pago = r.meio === 'vale' ? 'Vale-presente' : (r.status === 'pago' ? 'Sinal pago' : r.status === 'cancelada' ? 'Cancelada' : 'Sinal pendente');
+      return '<article class="res' + (novas[r.id] ? ' nova' : '') + '">' +
+        '<div class="h">' + RR.horaBR(r.hora) + '<small>até ' + RR.horaBR(fim) + '</small></div>' +
+        '<div class="who"><b>' + esc(r.nome) + '</b><div>' + o.nome + ' · ' + qtd + ' · ' + RR.money(RR.total(o, r.qtd)) + '</div>' +
+        (r.obs ? '<div class="obs">“' + esc(r.obs) + '”</div>' : '') + '</div>' +
+        '<div class="act"><span class="pill ' + r.status + '">' + pago + '</span>' +
+        (r.status === 'pendente' ? '<button class="mini" data-pago="' + r.id + '">Marcar pago</button>' : '') +
+        (r.status !== 'cancelada' ? '<a class="ic wa" target="_blank" rel="noopener" title="Mandar lembrete no WhatsApp" aria-label="WhatsApp" href="' + waLink(r, 'lembrete') + '">✆</a>' +
+          '<button class="ic" title="Cancelar" aria-label="Cancelar reserva" data-cancel="' + r.id + '">✕</button>' : '') +
+        '</div></article>';
+    }).join('');
+  }
+  $('lista').addEventListener('click', function (e) {
+    var p = e.target.closest('[data-pago]'), c = e.target.closest('[data-cancel]');
+    if (p) { RR.updateReserva(p.dataset.pago, { status: 'pago' }); RR.toast($('toast'), '<span class="t-ico">✓</span>Sinal marcado como pago'); }
+    if (c) { RR.updateReserva(c.dataset.cancel, { status: 'cancelada' }); RR.toast($('toast'), '<span class="t-ico">✕</span>Reserva cancelada. O horário voltou para o site.'); }
+    render();
+  });
+  $('dPrev').onclick = function () { dia = RR.addDays(dia, -1); render(); };
+  $('dNext').onclick = function () { dia = RR.addDays(dia, 1); render(); };
+
+  // ---------- AGENDA ----------
+  function inicioSemana(d) { var x = new Date(d); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return x; }
+  function renderAgenda() {
+    var fim = RR.addDays(semana, 6);
+    $('wLabel').textContent = RR.dataCurta(RR.iso(semana)) + ' a ' + RR.dataCurta(RR.iso(fim));
+    var b = RR.bloqueios(), todas = RR.reservas(), t = RR.iso(RR.today()), html = '';
+    var capDia = (RR.toMin(C.fecha) + 90 - RR.toMin(C.abre)); // minutos úteis do dia
+    for (var i = 0; i < 7; i++) {
+      var d = RR.addDays(semana, i), s = RR.iso(d), fech = RR.fechado(d), manual = b.dias.indexOf(s) !== -1;
+      var rs = todas.filter(function (r) { return r.data === s && r.status !== 'cancelada'; }).sort(function (a, c) { return a.hora < c.hora ? -1 : 1; });
+      var bh = b.horarios.filter(function (k) { return k.slice(0, 10) === s; });
+      var usados = rs.length * 90 + bh.length * 90, pct = fech ? 0 : Math.min(100, Math.round(usados / capDia * 100));
+      html += '<div class="col' + (fech ? ' closed' : '') + (s === t ? ' today' : '') + '">' +
+        '<h4><span>' + RR.DOW3[d.getDay()] + ' ' + d.getDate() + '</span><span class="muted" style="font-weight:400">' + (fech ? 'fechado' : pct + '%') + '</span></h4>' +
+        '<div class="occ"><i style="width:' + pct + '%"></i></div>' +
+        rs.map(function (r) { var o = RR.oficina(r.oficina); return '<div class="ev ' + r.oficina + '"><b>' + RR.horaBR(r.hora) + ' · ' + o.curto + '</b>' + esc(r.nome) + '</div>'; }).join('') +
+        bh.map(function (k) { return '<div class="ev blk"><b>' + RR.horaBR(k.slice(11)) + ' · bloqueado</b><button class="mini" data-unblk="' + k + '" style="margin-top:4px">Liberar</button></div>'; }).join('') +
+        '<div class="tools">' +
+        (s < t ? '' : manual ? '<button class="mini" data-abrir="' + s + '">Abrir dia</button>'
+          : (!fech ? '<button class="mini" data-fechar="' + s + '">Bloquear dia</button><button class="mini" data-blk="' + s + '">Bloquear horário</button>' : '')) +
+        '</div></div>';
+    }
+    $('week').innerHTML = html;
+  }
+  $('week').addEventListener('click', function (e) {
+    var b = RR.bloqueios(), el;
+    if ((el = e.target.closest('[data-fechar]'))) { b.dias.push(el.dataset.fechar); RR.setBloqueios(b); RR.toast($('toast'), '<span class="t-ico">✓</span>Dia bloqueado no site'); }
+    else if ((el = e.target.closest('[data-abrir]'))) { b.dias = b.dias.filter(function (x) { return x !== el.dataset.abrir; }); RR.setBloqueios(b); }
+    else if ((el = e.target.closest('[data-unblk]'))) { b.horarios = b.horarios.filter(function (x) { return x !== el.dataset.unblk; }); RR.setBloqueios(b); }
+    else if ((el = e.target.closest('[data-blk]'))) {
+      var s = el.dataset.blk, livre = RR.slotsDoDia('casal', s).filter(function (x) { return x.livres > 0; })[0];
+      var hora = livre ? livre.hora : null; // bloqueia o próximo horário livre do dia
+      if (!hora) { RR.toast($('toast'), '<span class="t-ico">!</span>Sem horário livre nesse dia'); return; }
+      b.horarios.push(s + ' ' + hora); RR.setBloqueios(b); RR.toast($('toast'), '<span class="t-ico">✓</span>' + RR.horaBR(hora) + ' bloqueado (1h30)');
+    } else return;
+    render();
+  });
+  $('wPrev').onclick = function () { semana = RR.addDays(semana, -7); render(); };
+  $('wNext').onclick = function () { semana = RR.addDays(semana, 7); render(); };
+
+  // ---------- OFICINAS ----------
+  function renderOficinas() {
+    $('ofList').innerHTML = RR.oficinas().map(function (o) {
+      return '<div class="of-row"><img src="' + o.img + '" alt="">' +
+        '<div><b>' + o.nome + '</b> <span class="small muted">· 1h30 · ' + (o.porPessoa ? 'por ' + o.unidade : 'por casal') + '</span>' +
+        '<div class="f"><label>Preço (R$)<input type="number" min="0" step="10" value="' + o.preco + '" data-of="' + o.id + '" data-k="preco"></label>' +
+        '<label>' + (o.porPessoa ? 'Vagas por horário' : 'Casais por horário') + '<input type="number" min="1" max="12" value="' + o.capacidade + '" data-of="' + o.id + '" data-k="capacidade"></label></div></div>' +
+        '<label class="switch" title="' + (o.ativa ? 'Ativa no site' : 'Pausada') + '"><input type="checkbox" ' + (o.ativa ? 'checked' : '') + ' data-of="' + o.id + '" data-k="ativa" aria-label="Mostrar ' + o.nome + ' no site"><span></span></label></div>';
+    }).join('');
+  }
+  $('ofList').addEventListener('change', function (e) {
+    var i = e.target, id = i.dataset.of, k = i.dataset.k; if (!id) return;
+    var patch = {}; patch[k] = k === 'ativa' ? i.checked : Math.max(0, +i.value || 0);
+    RR.setOficina(id, patch);
+    RR.toast($('toast'), '<span class="t-ico">✓</span>' + RR.oficina(id).nome + ' atualizada no site');
+    if (k === 'ativa') renderOficinas();
+  });
+
+  // ---------- VALES ----------
+  function renderVales() {
+    var nomes = { casal: 'Oficina de Casal', familia: 'Oficina em Família', livre: 'Valor livre' };
+    $('vTbody').innerHTML = RR.vales().slice().reverse().map(function (v) {
+      var st = v.status === 'ativo' && RR.parseISO(v.validade) < RR.today() ? 'vencido' : v.status;
+      return '<tr><td><code>' + v.codigo + '</code></td><td>' + (nomes[v.tipo] || v.tipo) + '<div class="small muted">' + RR.money(v.valor) + '</div></td>' +
+        '<td class="hide-m">' + esc(v.de) + ' → ' + esc(v.para) + '</td><td>' + RR.dataCurta(v.validade) + '</td><td><span class="pill ' + st + '">' + st + '</span></td></tr>';
+    }).join('');
+  }
+  $('reset').onclick = function () { RR.resetDemo(); novas = {}; dia = RR.today(); semana = inicioSemana(RR.today()); render(); RR.toast($('toast'), '<span class="t-ico">↻</span>Demonstração recomeçada'); };
+
+  // ---------- Reserva manual ----------
+  function horasPara(ofId) { $('mHora').innerHTML = RR.inicios(RR.oficina(ofId)).map(function (h) { return '<option value="' + h + '">' + RR.horaBR(h) + '</option>'; }).join(''); }
+  $('mOf').innerHTML = RR.oficinas().map(function (o) { return '<option value="' + o.id + '">' + o.nome + '</option>'; }).join('');
+  $('mOf').onchange = function () { horasPara(this.value); };
+  $('novaManual').onclick = function () { $('mData').value = RR.iso(dia); horasPara($('mOf').value); $('mManual').classList.add('on'); $('mNome').focus(); };
+  $('mCancel').onclick = function () { $('mManual').classList.remove('on'); };
+  $('mManual').addEventListener('click', function (e) { if (e.target === this) this.classList.remove('on'); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') $('mManual').classList.remove('on'); });
+  $('mSave').onclick = function () {
+    var n = $('mNome').value.trim(); if (!n) { $('mNome').focus(); return; }
+    var r = { id: RR.codigo('RR-'), nome: n, whats: $('mWhats').value, oficina: $('mOf').value, data: $('mData').value, hora: $('mHora').value,
+      qtd: +$('mQtd').value || 1, status: 'pendente', meio: 'manual', criada: Date.now() };
+    RR.addReserva(r); $('mManual').classList.remove('on'); $('mNome').value = ''; $('mWhats').value = '';
+    RR.toast($('toast'), '<span class="t-ico">✓</span>Reserva salva. O horário saiu do site.'); render();
+  };
+
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+  function render() {
+    var on = document.querySelector('.pane.on').id;
+    if (on === 'tab-hoje') renderHoje();
+    if (on === 'tab-agenda') renderAgenda();
+    if (on === 'tab-oficinas') renderOficinas();
+    if (on === 'tab-vales') renderVales();
+  }
+
+  // Reserva nova feita na outra aba: aviso na hora.
+  RR.onMessage(function (m) {
+    if (m && m.type === 'reserva' && m.reserva) {
+      var r = m.reserva, o = RR.oficina(r.oficina); novas[r.id] = 1;
+      RR.toast($('toast'), '<span class="t-ico">●</span><span><b>Nova reserva:</b> ' + esc(r.nome) + ' · ' + o.curto + ' · ' + RR.dataCurta(r.data) + ', ' + RR.horaBR(r.hora) + '</span>', 6000);
+      if (document.querySelector('.pane.on').id === 'tab-hoje' && r.data !== RR.iso(dia)) { dia = RR.parseISO(r.data); }
+    }
+    if (m && m.type === 'vale' && m.vale) RR.toast($('toast'), '<span class="t-ico">🎁</span><span><b>Vale vendido:</b> ' + m.vale.codigo + ' · ' + RR.money(m.vale.valor) + '</span>', 6000);
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

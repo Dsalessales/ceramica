@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Reservar oficina — Raquel Rocha Cerâmica</title>
+<meta name="description" content="Escolha a oficina, o dia e o horário, e garanta a sua vaga com o sinal no Pix.">
+<meta name="theme-color" content="#f4f3ef">
+<link rel="stylesheet" href="/ceramica/demo/demo.css">
+</head>
+<body>
+
+<div class="demo-bar">Demonstração para a Raquel · valores e horários de exemplo · nada é cobrado <a href="/ceramica/painel/">Ver como a Raquel →</a></div>
+
+<header class="top">
+  <a class="brand" href="/ceramica/" aria-label="Voltar para o início">
+    <svg viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="#242720" stroke-width="2.4" stroke-linecap="round"><path d="M20 4a16 16 0 1 0 16 16"/><path d="M20 10a10 10 0 1 0 10 10"/><circle cx="20" cy="20" r="4"/></g></svg>
+    <b>R Rocha</b>
+  </a>
+  <nav>
+    <a class="chip-link" href="#presente">Vale-presente</a>
+    <a class="chip-link" href="/ceramica/">Início</a>
+  </nav>
+</header>
+
+<main class="wrap">
+  <section class="page-head">
+    <div class="eyebrow">Reservas · Cunha, SP</div>
+    <h1 class="display">Reserve a sua<br>tarde no barro.</h1>
+    <p>Escolha a oficina, o dia e o horário. A vaga fica confirmada assim que o sinal de 50% cai no Pix, sem troca de mensagens.</p>
+  </section>
+
+  <div class="progress" id="progress" aria-live="polite">
+    <span id="progressText">Passo 1 de 4</span>
+    <span class="bar"><i id="progressBar" style="width:25%"></i></span>
+  </div>
+
+  <div class="grid-2">
+    <div>
+      <!-- Passo 1: oficina -->
+      <section class="step on" data-step="1" aria-labelledby="s1t">
+        <h2 class="display" id="s1t">Qual oficina?</h2>
+        <p class="lead">Todas duram 1h30 e são conduzidas pela Raquel. Material e aventais incluídos.</p>
+        <div class="workshops" id="workshops"></div>
+        <div class="actions">
+          <span class="mini-total" id="mt1"></span>
+          <button class="btn" id="go2" disabled>Escolher o dia <span class="ring">→</span></button>
+        </div>
+      </section>
+
+      <!-- Passo 2: data, horário e pessoas -->
+      <section class="step" data-step="2" aria-labelledby="s2t">
+        <h2 class="display" id="s2t">Escolha o dia</h2>
+        <p class="lead" id="s2lead">Os dias com bolinha verde têm horários livres.</p>
+        <div class="cal" id="cal">
+          <div class="cal-head">
+            <button class="round" id="prevM" aria-label="Mês anterior">←</button>
+            <strong id="calTitle">novembro 2026</strong>
+            <button class="round" id="nextM" aria-label="Próximo mês">→</button>
+          </div>
+          <div class="cal-grid" id="calGrid" role="grid"></div>
+          <div class="legend">
+            <span><i style="background:var(--ok)"></i>Disponível</span>
+            <span><i style="background:var(--warn)"></i>Poucas vagas</span>
+            <span><i style="background:var(--soft)"></i>Lotado ou fechado</span>
+          </div>
+        </div>
+
+        <div id="slotsWrap" style="display:none;margin-top:24px">
+          <h3 class="display" style="font-size:30px;margin:0 0 4px" id="slotsTitle">Horários</h3>
+          <p class="lead small" style="margin-bottom:14px">Cada horário é o início da oficina. Ela dura 1h30.</p>
+          <div class="slots" id="slots"></div>
+          <div class="qty" id="qtyBox" style="margin-top:18px">
+            <div><b id="qtyLabel">Pessoas</b><div class="small muted" id="qtyHint"></div></div>
+            <div class="ctl">
+              <button class="round" id="qMinus" aria-label="Menos">−</button>
+              <output id="qty">2</output>
+              <button class="round" id="qPlus" aria-label="Mais">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="link-btn" data-back="1">← Voltar</button>
+          <span class="mini-total" id="mt2"></span>
+          <button class="btn" id="go3" disabled>Seus dados <span class="ring">→</span></button>
+        </div>
+      </section>
+
+      <!-- Passo 3: dados -->
+      <section class="step" data-step="3" aria-labelledby="s3t">
+        <h2 class="display" id="s3t">Seus dados</h2>
+        <p class="lead">A Raquel usa o WhatsApp só para confirmar e mandar o lembrete na véspera.</p>
+        <form id="form" novalidate>
+          <div class="field" id="fNome">
+            <label for="nome">Nome</label>
+            <input class="input" id="nome" autocomplete="name" placeholder="Como você quer ser chamado">
+            <span class="msg">Conte para a gente o seu nome.</span>
+          </div>
+          <div class="field" id="fWhats">
+            <label for="whats">WhatsApp</label>
+            <input class="input" id="whats" inputmode="tel" autocomplete="tel" placeholder="(12) 99999-9999">
+            <span class="msg">Confira o número com DDD.</span>
+          </div>
+          <div class="field">
+            <label for="email">E-mail <span class="muted" style="font-weight:400">(opcional)</span></label>
+            <input class="input" id="email" type="email" autocomplete="email" placeholder="voce@email.com">
+          </div>
+          <div class="field">
+            <label for="obs">Algo que a Raquel deva saber?</label>
+            <textarea class="textarea" id="obs" placeholder="Idade das crianças, alguma alergia, se é uma data especial…"></textarea>
+          </div>
+          <div class="field">
+            <label for="vale">Tem um vale-presente?</label>
+            <div class="voucher">
+              <input class="input" id="vale" placeholder="PRESENTE-XXXX" autocomplete="off">
+              <button type="button" class="chip-link" id="usarVale">Aplicar</button>
+            </div>
+            <span class="hint" id="valeHint">Para testar, use ${CODIGO}.</span>
+            <span class="voucher-ok" id="valeOk"></span>
+          </div>
+          <label class="checkline" id="fAceite"><input type="checkbox" id="aceite"> <span>Li e aceito a <button type="button" class="link-btn" id="verPolitica" style="font-size:14px;color:inherit">política de remarcação</button>.</span></label>
+        </form>
+        <div class="actions">
+          <button class="link-btn" data-back="2">← Voltar</button>
+          <span class="mini-total" id="mt3"></span>
+          <button class="btn" id="go4">Pagar o sinal <span class="ring">→</span></button>
+        </div>
+      </section>
+
+      <!-- Passo 4: Pix -->
+      <section class="step" data-step="4" aria-labelledby="s4t">
+        <h2 class="display" id="s4t">Pague o sinal no Pix</h2>
+        <p class="lead">Assim que o pagamento cair, o horário fica seu. O restante você paga no ateliê.</p>
+        <div class="pix">
+          <div class="qr" id="qr"><div id="qrSvg"></div><div class="exp-msg">O código expirou.<br>Gere um novo para continuar.</div></div>
+          <div>
+            <div class="small muted">Vaga segura por</div>
+            <div class="timer" id="timer">15:00</div>
+            <div class="copy-row"><code id="pixCode">00020126…</code><button class="chip-link" id="copyPix">Copiar</button></div>
+            <div class="small muted" id="pixValor"></div>
+            <div id="expiredBox" style="display:none;margin-top:12px"><button class="btn clay" id="newPix">Gerar novo código <span class="ring">↻</span></button></div>
+            <div class="sim">Só na demonstração:<br>
+              <button id="simPay">Simular pagamento</button><button id="simExp">Simular Pix expirado</button>
+            </div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="link-btn" data-back="3">← Voltar</button>
+          <span class="mini-total" id="mt4"></span>
+          <span></span>
+        </div>
+      </section>
+
+      <!-- Passo 5: confirmado -->
+      <section class="step" data-step="5" aria-labelledby="s5t">
+        <div class="done">
+          <svg class="tick" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="44"/><path d="M31 52l13 13 26-30"/></svg>
+          <h2 class="display" id="s5t">Reserva confirmada.</h2>
+          <p class="muted" id="doneLead"></p>
+          <div class="code" id="doneCode">RR-0000</div>
+          <div class="done-card">
+            <dl id="doneDl"></dl>
+            <div class="done-actions">
+              <a class="chip-link" id="mapsBtn" target="_blank" rel="noopener">Abrir no Maps ↗</a>
+              <button class="chip-link" id="icsBtn">Adicionar à agenda</button>
+              <a class="chip-link" href="/ceramica/painel/" id="seePanel">Ver no painel da Raquel →</a>
+            </div>
+            <p class="small muted" style="margin:16px 0 0">Você vai receber um lembrete no WhatsApp na véspera. Remarcação grátis até 48h antes.</p>
+          </div>
+          <p style="margin-top:22px"><button class="link-btn" id="again">Fazer outra reserva</button></p>
+        </div>
+      </section>
+    </div>
+
+    <aside class="summary" id="summary" aria-label="Resumo da reserva">
+      <div class="small" style="color:#b5b5ab;display:flex;gap:8px;align-items:center"><span class="dot"></span>Sua reserva</div>
+      <h3 id="sumTitle">Escolha uma oficina</h3>
+      <dl id="sumDl"></dl>
+      <hr>
+      <div class="total"><span>Sinal agora (50%)</span><b id="sumSinal">—</b></div>
+      <div class="note" id="sumNote">O restante é pago no ateliê, no dia.</div>
+    </aside>
+  </div>
+</main>
+
+<!-- Vale-presente -->
+<section class="gift-wrap" id="presente">
+  <div class="wrap">
+    <div class="eyebrow">Vale-presente</div>
+    <div class="gift-grid" style="margin-top:14px">
+      <div>
+        <h2 class="display" style="font-size:clamp(40px,7vw,72px);margin:0 0 10px">Dê uma tarde<br>no barro.</h2>
+        <p class="muted" style="max-width:460px">Quem ganha escolhe a data depois. O vale vale por 6 meses e chega pronto para mandar no WhatsApp.</p>
+
+        <div id="giftForm">
+          <div class="small" style="font-weight:600;margin:20px 0 8px">Presente</div>
+          <div class="seg" id="giftTipo">
+            <button data-v="casal" class="on">Oficina de Casal</button>
+            <button data-v="familia">Oficina em Família</button>
+            <button data-v="livre">Valor livre</button>
+          </div>
+          <div class="field" id="fLivre" style="display:none">
+            <label for="valorLivre">Valor</label>
+            <input class="input" id="valorLivre" inputmode="numeric" placeholder="R$ 150">
+          </div>
+          <div class="small" style="font-weight:600;margin:6px 0 8px">Cartão</div>
+          <div class="seg" id="giftModelo">
+            <button data-v="natal" class="on">Natal</button>
+            <button data-v="namorados">Namorados</button>
+            <button data-v="neutro">Neutro</button>
+          </div>
+          <div class="field"><label for="gDe">De</label><input class="input" id="gDe" placeholder="Seu nome"></div>
+          <div class="field"><label for="gPara">Para</label><input class="input" id="gPara" placeholder="Quem vai ganhar"></div>
+          <div class="field"><label for="gMsg">Mensagem <span class="muted" style="font-weight:400">(até 200 caracteres)</span></label><textarea class="textarea" id="gMsg" maxlength="200" placeholder="Uma tarde para a gente fazer algo com as mãos."></textarea></div>
+          <button class="btn" id="giftPay">Pagar no Pix <span class="ring">→</span></button>
+        </div>
+
+        <div id="giftPix" style="display:none;margin-top:18px">
+          <div class="pix">
+            <div class="qr"><div id="giftQr"></div></div>
+            <div>
+              <div class="small muted">Valor do vale</div>
+              <div class="timer" id="giftValor">R$ 0</div>
+              <div class="sim">Só na demonstração:<br><button id="giftSim">Simular pagamento</button></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="giftDone" style="display:none;margin-top:18px">
+          <p style="font-weight:600;margin:0 0 10px">Vale pronto. Agora é só mandar.</p>
+          <div class="done-actions">
+            <button class="btn" id="giftDownload">Baixar o cartão <span class="ring">↓</span></button>
+            <a class="btn light" id="giftWhats" target="_blank" rel="noopener">Enviar no WhatsApp <span class="ring">↗</span></a>
+          </div>
+          <p style="margin-top:14px"><button class="link-btn" id="giftAgain">Fazer outro vale</button></p>
+        </div>
+      </div>
+
+      <div>
+        <div class="card-preview natal" id="cardPreview" aria-label="Prévia do cartão">
+          <svg class="rings" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="#fff" stroke-width="5"><circle cx="50" cy="50" r="46"/><circle cx="50" cy="50" r="32"/><circle cx="50" cy="50" r="18"/></g></svg>
+          <div class="cp-top"><span>R Rocha · Cerâmica</span><span id="cpTipo">Vale-presente</span></div>
+          <div>
+            <div class="cp-title" id="cpTitle">Uma tarde<br>no barro a dois.</div>
+            <div class="cp-msg" id="cpMsg"></div>
+          </div>
+          <div class="cp-bot"><span id="cpWho">Para você, com carinho</span><span class="cp-code" id="cpCode">PRESENTE-····</span></div>
+        </div>
+        <p class="small muted" style="margin-top:12px" id="cpVal">Válido por 6 meses · quem ganha escolhe a data</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Turma fechada -->
+<section class="wrap group-cta" id="grupo">
+  <div>
+    <div class="eyebrow">Turma fechada</div>
+    <h2 class="display">Aniversário, amigos ou equipe?</h2>
+    <p class="muted" style="max-width:520px;margin:0">Feche o ateliê só para o seu grupo. Conte quantas pessoas e a data, e a Raquel monta a oficina.</p>
+  </div>
+  <a class="btn clay" id="groupBtn" target="_blank" rel="noopener">Falar com a Raquel <span class="ring">↗</span></a>
+</section>
+
+<footer class="foot"><div class="wrap"><span>© 2026 Raquel Rocha Cerâmica · Cunha, SP</span><span>Demonstração feita pela Studio Digi</span></div></footer>
+
+<div class="modal" id="politica" role="dialog" aria-modal="true" aria-labelledby="polT">
+  <div class="box">
+    <h3 id="polT">Política de remarcação</h3>
+    <ul>
+      <li>O sinal de 50% garante o horário.</li>
+      <li>Remarcação grátis até 48 horas antes da oficina.</li>
+      <li>Com menos de 48 horas, o sinal não é devolvido.</li>
+      <li>Vale-presente: 6 meses de validade, quem ganha escolhe a data.</li>
+    </ul>
+    <p class="small muted">Texto de exemplo para a Raquel ajustar.</p>
+    <button class="btn" id="fecharPol">Entendi <span class="ring">✓</span></button>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="/ceramica/demo/demo.js"></script>
+<script>
+(function () {
+  'use strict';
+  var C = RR.CONFIG, $ = function (id) { return document.getElementById(id); };
+  var st = { step: 1, of: null, data: null, hora: null, qtd: 1, mes: null, vale: null, pixT: null, pixFim: 0, reserva: null };
+
+  $('valeHint').textContent = 'Para testar, use ' + C.valeCodigoExemplo + '.';
+  $('groupBtn').href = C.whatsappLink;
+  $('mapsBtn').href = C.mapa;
+
+  // ---------- Passo 1 ----------
+  function renderOficinas() {
+    var html = RR.oficinas().filter(function (o) { return o.ativa; }).map(function (o) {
+      var preco = o.porPessoa ? RR.money(o.preco) + ' por ' + o.unidade : RR.money(o.preco) + ' o casal';
+      return '<button class="ws' + (st.of === o.id ? ' sel' : '') + '" data-of="' + o.id + '" aria-pressed="' + (st.of === o.id) + '">' +
+        '<div class="ph"><img src="' + o.img + '" alt="" loading="lazy">' + (o.destaque ? '<span class="badge"><span class="dot"></span>' + o.destaque + '</span>' : '') + '<span class="check">✓</span></div>' +
+        '<div class="body"><h3>' + o.nome + '</h3><p>' + o.desc + '</p><div class="meta"><span>1h30</span><span>' + preco + '</span>' +
+        (o.porPessoa ? '<span>' + o.min + ' a ' + o.max + ' ' + o.unidade + (o.max > 1 ? 's' : '') + '</span>' : '<span>2 pessoas</span>') + '</div></div></button>';
+    }).join('');
+    $('workshops').innerHTML = html;
+  }
+  $('workshops').addEventListener('click', function (e) {
+    var b = e.target.closest('.ws'); if (!b) return;
+    var mudou = st.of !== b.dataset.of;
+    st.of = b.dataset.of;
+    if (mudou) { st.data = null; st.hora = null; var o = RR.oficina(st.of); st.qtd = o.porPessoa ? Math.max(o.min, 2 > o.max ? o.min : Math.min(2, o.max)) : 1; }
+    renderOficinas(); summary(); $('go2').disabled = false;
+  });
+  $('go2').onclick = function () { go(2); };
+
+  // ---------- Passo 2 ----------
+  function renderCal() {
+    var of = RR.oficina(st.of), m = st.mes, y = m.getFullYear(), mo = m.getMonth();
+    $('calTitle').textContent = RR.MES[mo] + ' ' + y;
+    var first = new Date(y, mo, 1), days = new Date(y, mo + 1, 0).getDate();
+    var t = RR.today();
+    $('prevM').disabled = (y === t.getFullYear() && mo === t.getMonth());
+    var h = RR.DOW3.map(function (d) { return '<div class="dow">' + d + '</div>'; }).join('');
+    for (var i = 0; i < first.getDay(); i++) h += '<div class="day blank"></div>';
+    for (var d = 1; d <= days; d++) {
+      var dt = new Date(y, mo, d), s = RR.iso(dt), r = RR.resumoDia(st.of, dt), cls = 'day', dis = false, sub = '';
+      if (dt < t) { cls += ' past'; dis = true; }
+      else if (r.estado === 'fechado') { cls += ' closed'; dis = true; sub = 'fechado'; }
+      else if (r.estado === 'lotado') { cls += ' full'; dis = true; sub = 'lotado'; }
+      else if (r.estado === 'poucas') { cls += ' few'; }
+      else cls += ' ok';
+      if (st.data === s) cls += ' sel';
+      h += '<button class="' + cls + '" data-d="' + s + '"' + (dis ? ' disabled' : '') + ' aria-label="' + RR.dataLonga(s) + (sub ? ', ' + sub : '') + '">' + d + (sub ? '<small>' + sub + '</small>' : '') + '</button>';
+    }
+    $('calGrid').innerHTML = h;
+    $('s2lead').textContent = of.nome + ' · os dias com bolinha verde têm horários livres.';
+  }
+  $('calGrid').addEventListener('click', function (e) {
+    var b = e.target.closest('.day'); if (!b || b.disabled) return;
+    st.data = b.dataset.d; st.hora = null; renderCal(); renderSlots(); summary(); check2();
+    setTimeout(function () { $('slotsWrap').scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
+  });
+  $('prevM').onclick = function () { st.mes = new Date(st.mes.getFullYear(), st.mes.getMonth() - 1, 1); renderCal(); };
+  $('nextM').onclick = function () { st.mes = new Date(st.mes.getFullYear(), st.mes.getMonth() + 1, 1); renderCal(); };
+
+  function renderSlots() {
+    if (!st.data) { $('slotsWrap').style.display = 'none'; return; }
+    $('slotsWrap').style.display = '';
+    var of = RR.oficina(st.of);
+    $('slotsTitle').textContent = 'Horários · ' + RR.dataLonga(st.data);
+    $('slots').innerHTML = RR.slotsDoDia(st.of, st.data).map(function (x) {
+      var need = of.porPessoa ? st.qtd : 1, ok = x.livres >= need, last = ok && x.livres === need;
+      var lbl = !x.livres ? 'Lotado' : (!ok ? 'Só ' + x.livres + ' vaga' + (x.livres > 1 ? 's' : '') : (last ? 'Última vaga' : x.livres + ' vaga' + (x.livres > 1 ? 's' : '')));
+      return '<button class="slot' + (st.hora === x.hora ? ' sel' : '') + (last ? ' last' : '') + '" data-h="' + x.hora + '"' + (ok ? '' : ' disabled') + '><b>' + RR.horaBR(x.hora) + '</b><span>' + lbl + '</span></button>';
+    }).join('');
+    // quantidade
+    var box = $('qtyBox');
+    if (!of.porPessoa) { box.style.display = 'none'; st.qtd = 1; }
+    else {
+      box.style.display = '';
+      $('qtyLabel').textContent = of.unidade === 'criança' ? 'Crianças' : 'Pessoas';
+      $('qtyHint').textContent = RR.money(of.preco) + ' por ' + of.unidade + ' · de ' + of.min + ' a ' + of.max;
+      $('qty').textContent = st.qtd;
+      $('qMinus').disabled = st.qtd <= of.min; $('qPlus').disabled = st.qtd >= of.max;
+    }
+  }
+  $('slots').addEventListener('click', function (e) {
+    var b = e.target.closest('.slot'); if (!b || b.disabled) return;
+    st.hora = b.dataset.h; renderSlots(); summary(); check2();
+  });
+  $('qMinus').onclick = function () { var o = RR.oficina(st.of); if (st.qtd > o.min) { st.qtd--; afterQty(); } };
+  $('qPlus').onclick = function () { var o = RR.oficina(st.of); if (st.qtd < o.max) { st.qtd++; afterQty(); } };
+  function afterQty() {
+    var still = RR.slotsDoDia(st.of, st.data).filter(function (x) { return x.hora === st.hora && x.livres >= st.qtd; }).length;
+    if (!still) st.hora = null;
+    renderSlots(); summary(); check2();
+  }
+  function check2() { $('go3').disabled = !(st.data && st.hora); }
+  $('go3').onclick = function () { go(3); };
+
+  // ---------- Passo 3 ----------
+  var whats = $('whats');
+  whats.addEventListener('input', function () {
+    var d = whats.value.replace(/\D/g, '').slice(0, 11), o = '';
+    if (d.length > 0) o = '(' + d.slice(0, 2);
+    if (d.length >= 3) o += ') ' + d.slice(2, d.length > 10 ? 7 : 6);
+    if (d.length >= 7) o += '-' + d.slice(d.length > 10 ? 7 : 6);
+    whats.value = o;
+  });
+  $('usarVale').onclick = function () {
+    var r = RR.valeValido($('vale').value), ok = $('valeOk');
+    if (r.ok) {
+      st.vale = r.vale; ok.textContent = '✓ Vale de ' + r.vale.de + ' aplicado. O sinal fica coberto pelo presente.'; ok.style.color = '';
+    } else { st.vale = null; ok.textContent = r.msg; ok.style.color = 'var(--danger)'; }
+    ok.classList.add('on'); summary();
+  };
+  $('verPolitica').onclick = function () { $('politica').classList.add('on'); $('fecharPol').focus(); };
+  $('fecharPol').onclick = function () { $('politica').classList.remove('on'); };
+  $('politica').addEventListener('click', function (e) { if (e.target === this) this.classList.remove('on'); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') $('politica').classList.remove('on'); });
+
+  $('go4').onclick = function () {
+    var ok = true;
+    var n = $('nome').value.trim(), w = whats.value.replace(/\D/g, '');
+    $('fNome').classList.toggle('err', n.length < 2); if (n.length < 2) ok = false;
+    $('fWhats').classList.toggle('err', w.length < 10); if (w.length < 10) ok = false;
+    var ac = $('aceite').checked; $('fAceite').classList.toggle('err', !ac); if (!ac) ok = false;
+    if (!ok) { var f = document.querySelector('.field.err .input') || $('aceite'); f.focus(); return; }
+    if (st.vale) { finalizar('vale'); return; }
+    go(4); startPix();
+  };
+
+  // ---------- Passo 4: Pix ----------
+  function startPix() {
+    var of = RR.oficina(st.of), sinal = RR.total(of, st.qtd) * C.sinal;
+    var code = '00020126580014BR.GOV.BCB.PIX0136demo-rrocha-' + Math.random().toString(36).slice(2, 10) + '5204000053039865406' + sinal.toFixed(2) + '5802BR5913RAQUEL ROCHA6005CUNHA';
+    $('qrSvg').innerHTML = RR.qrSVG(code); $('pixCode').textContent = code;
+    $('pixValor').textContent = 'Valor do sinal: ' + RR.money(sinal);
+    $('qr').classList.remove('expired'); $('expiredBox').style.display = 'none';
+    st.pixFim = Date.now() + C.pixMinutos * 60e3; tick(); clearInterval(st.pixT); st.pixT = setInterval(tick, 1000);
+  }
+  function tick() {
+    var s = Math.max(0, Math.round((st.pixFim - Date.now()) / 1000));
+    $('timer').textContent = String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+    $('timer').classList.toggle('low', s < 120);
+    if (!s) expire();
+  }
+  function expire() { clearInterval(st.pixT); $('qr').classList.add('expired'); $('expiredBox').style.display = ''; $('timer').textContent = '00:00'; }
+  $('newPix').onclick = startPix;
+  $('simExp').onclick = expire;
+  $('copyPix').onclick = function () {
+    var t = $('pixCode').textContent;
+    (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function () { RR.toast($('toast'), '<span class="t-ico">✓</span>Código Pix copiado'); }, function () {});
+  };
+  $('simPay').onclick = function () { if ($('qr').classList.contains('expired')) return; finalizar('pix'); };
+
+  // ---------- Passo 5 ----------
+  function finalizar(meio) {
+    clearInterval(st.pixT);
+    var of = RR.oficina(st.of), tot = RR.total(of, st.qtd);
+    var r = { id: RR.codigo('RR-'), nome: $('nome').value.trim(), whats: whats.value, email: $('email').value.trim(), obs: $('obs').value.trim(),
+      oficina: st.of, data: st.data, hora: st.hora, qtd: st.qtd, status: 'pago', meio: meio, vale: st.vale ? st.vale.codigo : null,
+      total: tot, sinal: meio === 'vale' ? 0 : tot * C.sinal, criada: Date.now(), nova: true };
+    RR.addReserva(r); if (st.vale) RR.usarVale(st.vale.codigo);
+    st.reserva = r;
+    $('doneCode').textContent = r.id;
+    $('doneLead').textContent = 'Te espero no ateliê, ' + r.nome.split(' ')[0] + '.';
+    var linhas = [['Oficina', of.nome], ['Quando', RR.dataLonga(r.data) + ', ' + RR.horaBR(r.hora)], ['Duração', '1h30']];
+    if (of.porPessoa) linhas.push([of.unidade === 'criança' ? 'Crianças' : 'Pessoas', r.qtd]);
+    linhas.push([meio === 'vale' ? 'Pago com' : 'Sinal pago', meio === 'vale' ? 'Vale-presente' : RR.money(r.sinal)]);
+    if (meio !== 'vale') linhas.push(['No ateliê', RR.money(tot - r.sinal)]);
+    linhas.push(['Onde', C.cidade]);
+    $('doneDl').innerHTML = linhas.map(function (l) { return '<dt>' + l[0] + '</dt><dd>' + l[1] + '</dd>'; }).join('');
+    go(5);
+  }
+  $('icsBtn').onclick = function () {
+    var r = st.reserva, of = RR.oficina(r.oficina), d = r.data.replace(/-/g, ''), h = r.hora.replace(':', '') + '00';
+    var fimMin = RR.toMin(r.hora) + of.dur, hf = RR.toHora(fimMin).replace(':', '') + '00';
+    var ics = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//RRocha//Demo//PT\r\nBEGIN:VEVENT\r\nUID:' + r.id + '@rrocha\r\nDTSTART;TZID=America/Sao_Paulo:' + d + 'T' + h +
+      '\r\nDTEND;TZID=America/Sao_Paulo:' + d + 'T' + hf + '\r\nSUMMARY:' + of.nome + ' · R Rocha Cerâmica\r\nLOCATION:Cunha, SP\r\nDESCRIPTION:Reserva ' + r.id + '\r\nEND:VEVENT\r\nEND:VCALENDAR';
+    var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' })); a.download = 'oficina-rrocha.ics'; a.click();
+  };
+  $('again').onclick = function () {
+    st.of = null; st.data = null; st.hora = null; st.vale = null; ['nome', 'whats', 'email', 'obs', 'vale'].forEach(function (i) { $(i).value = ''; });
+    $('aceite').checked = false; $('valeOk').classList.remove('on'); renderOficinas(); $('go2').disabled = true; summary(); go(1);
+  };
+
+  // ---------- navegação ----------
+  document.querySelectorAll('[data-back]').forEach(function (b) { b.onclick = function () { clearInterval(st.pixT); go(+b.dataset.back); }; });
+  function go(n) {
+    st.step = n;
+    document.querySelectorAll('.step').forEach(function (s) { s.classList.toggle('on', +s.dataset.step === n); });
+    var p = $('progress'); p.style.visibility = n === 5 ? 'hidden' : '';
+    $('progressText').textContent = 'Passo ' + Math.min(n, 4) + ' de 4'; $('progressBar').style.width = (Math.min(n, 4) * 25) + '%';
+    $('summary').style.display = n === 5 ? 'none' : '';
+    if (n === 2) { if (!st.mes) { var t = RR.today(); st.mes = new Date(t.getFullYear(), t.getMonth(), 1); } renderCal(); renderSlots(); check2(); }
+    summary();
+    window.scrollTo({ top: document.querySelector('.page-head').offsetTop + 120, behavior: 'smooth' });
+  }
+
+  function summary() {
+    var of = st.of && RR.oficina(st.of), dl = [], sinal = '—', mini = '';
+    if (of) {
+      var tot = RR.total(of, st.qtd);
+      $('sumTitle').textContent = of.nome;
+      dl.push(['Duração', '1h30']);
+      if (st.data) dl.push(['Dia', RR.dataCurta(st.data)]);
+      if (st.hora) dl.push(['Início', RR.horaBR(st.hora)]);
+      if (of.porPessoa) dl.push([of.unidade === 'criança' ? 'Crianças' : 'Pessoas', st.qtd]); else dl.push(['Pessoas', '2']);
+      dl.push(['Total', RR.money(tot)]);
+      if (st.vale) { dl.push(['Vale-presente', st.vale.codigo]); sinal = 'R$ 0'; $('sumNote').textContent = 'O vale-presente cobre a oficina.'; }
+      else { sinal = RR.money(tot * C.sinal); $('sumNote').textContent = 'O restante (' + RR.money(tot - tot * C.sinal) + ') é pago no ateliê, no dia.'; }
+      mini = 'Sinal agora<b>' + sinal + '</b>';
+    } else $('sumTitle').textContent = 'Escolha uma oficina';
+    $('sumDl').innerHTML = dl.map(function (l) { return '<dt>' + l[0] + '</dt><dd>' + l[1] + '</dd>'; }).join('');
+    $('sumSinal').textContent = sinal;
+    ['mt1', 'mt2', 'mt3', 'mt4'].forEach(function (i) { $(i).innerHTML = mini; });
+  }
+
+  // Outra aba mudou algo (painel bloqueou horário, mudou preço…)
+  RR.onMessage(function () { if (st.step === 1) renderOficinas(); if (st.step === 2) { renderCal(); renderSlots(); } summary(); });
+
+  // ---------- Vale-presente ----------
+  var g = { tipo: 'casal', modelo: 'natal', codigo: null };
+  var titulos = { casal: 'Uma tarde<br>no barro a dois.', familia: 'Uma tarde no barro<br>em família.', livre: 'Uma tarde<br>no barro.' };
+  function seg(id, key) {
+    $(id).addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      this.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); });
+      g[key] = b.dataset.v; gPreview();
+    });
+  }
+  seg('giftTipo', 'tipo'); seg('giftModelo', 'modelo');
+  ['gDe', 'gPara', 'gMsg', 'valorLivre'].forEach(function (i) { $(i).addEventListener('input', gPreview); });
+  function gValor() {
+    if (g.tipo === 'livre') return +($('valorLivre').value.replace(/\D/g, '')) || 0;
+    var o = RR.oficina(g.tipo); return o.porPessoa ? o.preco * 4 : o.preco;
+  }
+  function gPreview() {
+    $('fLivre').style.display = g.tipo === 'livre' ? '' : 'none';
+    var c = $('cardPreview'); c.className = 'card-preview ' + g.modelo;
+    $('cpTitle').innerHTML = titulos[g.tipo];
+    $('cpTipo').textContent = g.tipo === 'livre' ? 'Vale ' + RR.money(gValor()) : (g.tipo === 'casal' ? 'Oficina de Casal' : 'Oficina em Família · 4 pessoas');
+    $('cpMsg').textContent = $('gMsg').value;
+    var de = $('gDe').value.trim(), para = $('gPara').value.trim();
+    $('cpWho').textContent = (para ? 'Para ' + para : 'Para você') + (de ? ', de ' + de : ', com carinho');
+    $('cpCode').textContent = g.codigo || 'PRESENTE-····';
+  }
+  $('giftPay').onclick = function () {
+    if (g.tipo === 'livre' && gValor() < 50) { $('fLivre').classList.add('err'); $('valorLivre').focus(); RR.toast($('toast'), '<span class="t-ico">!</span>Valor mínimo de R$ 50 na demonstração'); return; }
+    $('giftForm').style.display = 'none'; $('giftPix').style.display = '';
+    $('giftQr').innerHTML = RR.qrSVG('vale' + Date.now()); $('giftValor').textContent = RR.money(gValor());
+  };
+  $('giftSim').onclick = function () {
+    g.codigo = RR.codigo('PRESENTE-');
+    var t = RR.today(), val = new Date(t); val.setMonth(val.getMonth() + C.valeMeses);
+    RR.addVale({ codigo: g.codigo, tipo: g.tipo, valor: gValor(), de: $('gDe').value.trim() || '—', para: $('gPara').value.trim() || '—', status: 'ativo', validade: RR.iso(val), criado: RR.iso(t) });
+    $('giftPix').style.display = 'none'; $('giftDone').style.display = ''; gPreview();
+    $('cpVal').textContent = 'Válido até ' + val.toLocaleDateString('pt-BR') + ' · quem ganha escolhe a data';
+    var msg = 'Você ganhou um vale-presente para uma oficina de cerâmica no ateliê da Raquel Rocha, em Cunha! Código: ' + g.codigo + '. Para agendar: ' + location.origin + '/ceramica/reservar/';
+    $('giftWhats').href = 'https://wa.me/?text=' + encodeURIComponent(msg);
+    RR.toast($('toast'), '<span class="t-ico">✓</span>Vale ' + g.codigo + ' criado');
+  };
+  $('giftAgain').onclick = function () { g.codigo = null; $('giftDone').style.display = 'none'; $('giftForm').style.display = ''; $('cpVal').textContent = 'Válido por 6 meses · quem ganha escolhe a data'; gPreview(); };
+  $('giftDownload').onclick = function () {
+    // Desenha o cartão num canvas e baixa como PNG.
+    var cv = document.createElement('canvas'), W = 1200, H = 750, x = cv.getContext('2d'); cv.width = W; cv.height = H;
+    var cores = { natal: ['#b8573a', '#3a1a14'], namorados: ['#e3946a', '#5a2a1e'], neutro: ['#6f735f', '#2b2a26'] }[g.modelo];
+    var gr = x.createLinearGradient(W, 0, 0, H); gr.addColorStop(0, cores[0]); gr.addColorStop(1, cores[1]); x.fillStyle = gr; x.fillRect(0, 0, W, H);
+    x.strokeStyle = 'rgba(255,255,255,.14)'; x.lineWidth = 26; [200, 140, 80].forEach(function (r) { x.beginPath(); x.arc(W - 90, 90, r, 0, Math.PI * 2); x.stroke(); });
+    x.fillStyle = '#f5f2ea'; x.font = '500 28px Hanken, sans-serif'; x.fillText('R ROCHA · CERÂMICA', 70, 100);
+    x.font = '400 92px Bricolage, sans-serif';
+    titulos[g.tipo].split('<br>').forEach(function (l, i) { x.fillText(l, 70, 330 + i * 96); });
+    x.font = '400 30px Hanken, sans-serif'; x.globalAlpha = .9; x.fillText(($('gMsg').value || '').slice(0, 70), 70, 560); x.globalAlpha = 1;
+    x.font = '500 30px Hanken, sans-serif'; x.fillText($('cpWho').textContent, 70, 670);
+    x.font = '500 34px Bricolage, sans-serif'; var cw = x.measureText(g.codigo).width; x.fillText(g.codigo, W - 70 - cw, 670);
+    var a = document.createElement('a'); a.href = cv.toDataURL('image/png'); a.download = g.codigo + '.png'; a.click();
+  };
+  gPreview();
+
+  // ---------- início ----------
+  renderOficinas(); summary();
+  var q = new URLSearchParams(location.search).get('oficina');
+  if (q && RR.oficina(q)) { st.of = q; var o0 = RR.oficina(q); st.qtd = o0.porPessoa ? Math.min(Math.max(o0.min, 2), o0.max) : 1; renderOficinas(); $('go2').disabled = false; summary(); }
+})();
+</script>
+</body>
+</html>
