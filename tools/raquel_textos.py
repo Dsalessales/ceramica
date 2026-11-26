@@ -30,7 +30,7 @@ SUB = [
      'Oficinas de modelagem manual em Cunha, SP: casal, família, crianças e aula noturna. Reserve o horário e pague o sinal no Pix.'),
 
     # Hero
-    ('© Since 2014 · Bristol', '© Ateliê · Cunha, SP'),
+    ('© Since 2014 · Bristol', 'Cerâmica artesanal · Cunha, SP'),
     ('Made by hand,', 'Feito à mão,'),
     ('four ways,', 'a dois ou em família,'),
     ('one bench at a time.', 'uma peça por vez.'),
