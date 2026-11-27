@@ -178,22 +178,23 @@ SUB = [
     ('Ada Okafor', 'Raquel Rocha'),
     ('Peter Lund', 'Raquel Rocha'),
 
-    # Depoimentos (exemplos, para trocar pelos reais)
+    # Depoimentos FICTÍCIOS, só para a demonstração (a seção diz 'Depoimentos de exemplo').
+    # Trocar pelos depoimentos reais antes de publicar de verdade.
     ('From our students', 'Depoimentos'),
     ('In their own words.', 'Quem já veio.'),
     ('4.9 average from 320 student reviews', 'Depoimentos de exemplo'),
     ('I came in thinking I wasn’t creative. Six weeks later I had made a full set of bowls for my own kitchen.',
-     'Espaço para o depoimento de um casal que fez a oficina (texto de exemplo).'),
+     'Viemos comemorar cinco anos juntos e foi a melhor tarde da viagem. A Raquel deixa a gente à vontade desde o primeiro minuto.'),
     ('The best Saturday I have had in years. Phones away, hands inky, tea on the bench.',
-     'Espaço para o depoimento de uma família que veio ao ateliê (texto de exemplo).'),
+     'Três gerações na mesma mesa, com as mãos no barro. A vó quis voltar no dia seguinte.'),
     ('At sixty I finally learned to weave. Ada made every single row feel possible.',
-     'Espaço para o depoimento de quem trouxe as crianças (texto de exemplo).'),
+     'Meu filho de 7 anos ficou concentrado a oficina inteira. Até hoje mostra a caneca que fez.'),
     ('Peter is the calmest teacher I have met. I wear the ring I made every day.',
-     'Espaço para o depoimento de quem fez a aula noturna (texto de exemplo).'),
-    ('Priya Nair', 'Nome do casal'),
-    ('Tom Becker', 'Nome da família'),
-    ('Margaret Ellis', 'Nome do responsável'),
-    ('Daniel Kim', 'Nome do aluno'),
+     'A aula noturna é um respiro: luz baixa, música boa e a peça saindo devagar das mãos.'),
+    ('Priya Nair', 'Ana e Pedro'),
+    ('Tom Becker', 'Família Souza'),
+    ('Margaret Ellis', 'Juliana, mãe do Theo'),
+    ('Daniel Kim', 'Marcos'),
 
     # Dúvidas
     ('Booking · Classes · Membership · Gifts', 'Reserva · Oficinas · Turmas · Presente'),
